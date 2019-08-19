@@ -1,0 +1,98 @@
+---
+output: 
+  pdf_document:
+    pandoc_args: [
+      "-V", "classoption=twocolumn"
+    ]
+header-includes:
+- \setlength{\columnsep}{18pt}
+---
+
+## GaTech ID: abriel3  
+### Assignment: "Activity 1: Time Complexity"  
+
+**Function:** log_factorial  
+**Time Complexity:** $O(nlog(n))$  
+
+```{r include=FALSE}
+log_factorial <- function (n) {
+  # Return the log of factorial(n) for any integer n > 0
+  if (n <= 1)
+    return (0)
+  return (log(n) + log_factorial(n - 1))
+}
+```
+```{r results='hide'}
+#install.packages("microbenchmarkCore")
+#install.packages("microbenchmark")
+library(microbenchmarkCore)
+library(microbenchmark)
+
+n <- 1000
+runtimes <- c()
+
+for(i in seq(1, n, 10)) { 
+  benchtimes <- microbenchmark(
+    log_factorial(i))$time
+  runtimes[i] <- median(benchtimes)
+}
+
+plot(runtimes, 
+     xlab = "n", 
+     ylab = "Time in Nanoseconds", 
+     main = "log_factorial")
+```  
+
+**Function:** sum_log_factorial  
+**Time Complexity:** $O(n^2 log(n))$  
+
+```{r include=FALSE}
+sum_log_factorial <- function (n) {
+  # Return the sum of log_factorial(i) for i in 1..n
+  sum <- 0
+  for(i in seq(1, n, 1)) {
+    sum <- sum + log_factorial(i)
+  }
+  return (sum)
+}
+```
+```{r echo=T, results='hide'}
+n <- 1000
+runtimes <- c()
+
+for (i in seq(1, n)) {
+  runtimes[i] <- system.time(
+    sum_log_factorial(i))['elapsed']
+}
+
+plot(runtimes, 
+     xlab = "n", 
+     ylab = "Time in Seconds", 
+     main = "sum_log_factorial")
+```  
+
+**Function:** fibonacci  
+**Time Complexity:** $O(2^n)$  
+
+```{r include=FALSE}
+fibonacci <- function(n) {
+  # Return nth Fibonacci number
+  if (n <= 1)
+    return (n)
+  return (fibonacci(n - 1) + fibonacci(n - 2))
+}
+```
+```{r echo=T, results='hide'}
+n <- 40
+runtimes <- c()
+
+for (i in seq(1, n, 1)) {
+  runtimes[i] <- system.time(
+    fibonacci(i))['elapsed']
+}
+
+plot(runtimes, 
+     xlab = "n", 
+     ylab = "Time in Seconds", 
+     main = "fibonacci")
+```
